@@ -185,6 +185,17 @@ void board_init_f(ulong dummy)
 
 	ctrl_mmr_unlock();
 
+  if (0 && IS_ENABLED(CONFIG_ARM64)) {
+    volatile int x = 0x1000000; // about 15sec
+    printf("Starting wait loop in %s!!!!\n", __func__);
+    while (x--) ;
+    printf("Done with wait loop!!!!\n");
+  }
+  else if (0 && IS_ENABLED(CONFIG_CPU_V7R)) {
+    volatile int x = 0x20000000; // about 15 sec
+    while (x--) ;
+  }
+
 	/* Init DM early */
 	spl_early_init();
 
