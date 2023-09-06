@@ -744,6 +744,13 @@ static init_fnc_t init_sequence_r[] = {
 
 void board_init_r(gd_t *new_gd, ulong dest_addr)
 {
+  if (0 && IS_ENABLED(CONFIG_ARM64)) {
+    volatile int x = 0x1000000; // about 15sec @ 1.2GHz
+    printf("Starting wait loop in %s!!!!\n", __func__);
+    while (x--) ;
+    printf("Donewith wait loop!!!!\n");
+  }
+
 	/*
 	 * The pre-relocation drivers may be using memory that has now gone
 	 * away. Mark serial as unavailable - this will fall back to the debug
