@@ -1,0 +1,23 @@
+# Flash firmware to OSPI flash
+#
+# Copy this file to the boot partition of your sdcard and rename to uEnv.txt.
+# On boot of the sdcard, uenvcmd below will run and flash the current firmware
+# to the board's OSPI flash.
+#
+# set altp to a subdirectory if you flash firmware different than used to boot.
+# Assumes firmware is on sdcard (mmc1) 1st partition.
+#
+# todo: set LEDs or something for pass/fail so serial console isn't needed
+
+altp=
+f_init=fail=1; sf probe
+b_write=load mmc 1:1 ${loadaddr} ${altp}tiboot3.bin && sf update $loadaddr 0x0 $filesize
+s_write=load mmc 1:1 ${loadaddr} ${altp}tispl.bin && sf update $loadaddr 0x80000 $filesize
+u_write=load mmc 1:1 ${loadaddr} ${altp}u-boot.img && sf update $loadaddr 0x280000 $filesize
+f_write=load mmc 1:1 ${loadaddr} ${altp}sysfw.itb && sf update $loadaddr 0x6C0000 $filesize
+done=fail=0
+epilog=if test $fail = 1; then echo ERROR:  failed to successfully flash; \
+       else echo SUCCESS!; \
+       fi; \
+       while true ; do ; sleep 1; done
+uenvcmd=run f_init b_write s_write u_write f_write done; run epilog
