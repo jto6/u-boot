@@ -1,0 +1,25 @@
+# Flash firmware to BeaglePlay's eMMC
+#
+# Copy this file to the boot partition of your sdcard and rename to uEnv.txt.
+# On boot of the sdcard, uenvcmd below will run and flash the current firmware
+# to the board's eMMC flash.
+#
+# set altp to a subdirectory if you flash firmware different than used to boot.
+# Assumes firmware is on sdcard (mmc1) 1st partition.
+# Assumes eMMC boot is from the first eMMC boot partition
+#
+# todo: set LEDs or something for pass/fail so serial console isn't needed
+
+altp=
+f_init=fail=1; mw $loadaddr 0 0x100000
+b_set=mmc dev 0 1 && mmc erase 0x0 0x2000
+b_write=fatload mmc 1 ${loadaddr} tiboot3.bin && mmc write ${loadaddr} 0x0 0x800
+u_set=mmc dev 0
+s_write=fatload mmc 1 ${loadaddr} tispl.bin && save mmc 0 ${loadaddr} tispl.bin ${filesize}
+u_write=fatload mmc 1 ${loadaddr} u-boot.img && save mmc 0 ${loadaddr} u-boot.img ${filesize}
+done=fail=0
+epilog=if test $fail = 1; then echo ERROR:  failed to successfully flash; \
+       else echo SUCCESS!; \
+       fi; \
+       while true ; do ; sleep 1; done
+uenvcmd=run f_init b_set b_write u_set s_write u_write done; run epilog
