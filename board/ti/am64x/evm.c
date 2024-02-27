@@ -48,7 +48,7 @@ struct efi_fw_image fw_images[] = {
 };
 
 struct efi_capsule_update_info update_info = {
-	.dfu_string = "mtd ospi0=tiboot3.bin raw 0 100000;tispl.bin raw 100000 200000;u-boot.img raw 300000 400000",
+	.dfu_string = "sf 0:0=tiboot3.bin raw 0 100000;tispl.bin raw 100000 200000;u-boot.img raw 300000 400000",
 	.num_images = ARRAY_SIZE(fw_images),
 	.images = fw_images,
 };
