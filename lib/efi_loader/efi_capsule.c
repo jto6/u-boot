@@ -1,3 +1,4 @@
+#define DEBUG
 // SPDX-License-Identifier: GPL-2.0+
 /*
  *  EFI Capsule
@@ -912,12 +913,18 @@ static bool device_is_present_and_system_part(struct efi_device_path *dp)
 	/* Check device exists */
 	handle = efi_dp_find_obj(dp, NULL, NULL);
 	if (!handle)
+	{
+		printf("failed with call to efi_dp_find_obj\n");
 		return false;
+	}
 
 	/* Check device is on system partition */
 	handle = efi_dp_find_obj(dp, &efi_system_partition_guid, &rem);
 	if (!handle)
+	{
+		printf("failed with call to efi_dp_find_obj for ESP\n");
 		return false;
+	}
 
 	return true;
 }
