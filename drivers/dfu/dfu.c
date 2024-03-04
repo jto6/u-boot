@@ -730,6 +730,9 @@ int dfu_write_from_mem_addr(struct dfu_entity *dfu, void *buf, int size)
 	int i, ret = 0;
 	void *dp = buf;
 
+	if (left %2 == 1)
+		left++;
+
 	/*
 	 * Here we must call dfu_get_buf(dfu) first to be sure that dfu_buf_size
 	 * has been properly initialized - e.g. if "dfu_bufsiz" has been taken
