@@ -1313,6 +1313,7 @@ efi_status_t efi_launch_capsules(void)
 	bool update_status = true;
 	bool fw_accept_os = false;
 
+	printf("Checking for Capsule Updates!!!\n");
 	if (check_run_capsules() != EFI_SUCCESS)
 		return EFI_SUCCESS;
 
