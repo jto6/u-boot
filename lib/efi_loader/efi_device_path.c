@@ -154,6 +154,7 @@ static efi_handle_t find_handle(struct efi_device_path *dp,
 		if (ret != EFI_SUCCESS)
 			continue;
 		dp_current = handler->protocol_interface;
+		printf("\tSearching: %pD\n", dp_current);
 		if (short_path) {
 			dp_current = efi_dp_shorten(dp_current);
 			if (!dp_current)
@@ -196,6 +197,7 @@ efi_handle_t efi_dp_find_obj(struct efi_device_path *dp,
 {
 	efi_handle_t handle;
 
+	printf("%s:  Looking for dp: %pD\n", __func__, dp);
 	handle = find_handle(dp, guid, false, rem);
 	if (!handle)
 		/* Match short form device path */
