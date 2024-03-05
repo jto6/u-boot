@@ -229,6 +229,8 @@ efi_status_t efi_set_variable_int(const u16 *variable_name,
 	u64 time = 0;
 	enum efi_auth_var_type var_type;
 
+	printf("%s:  Setting EFI var:  %ls\n", __func__, variable_name);
+
 	if (!variable_name || !*variable_name || !vendor)
 		return EFI_INVALID_PARAMETER;
 
