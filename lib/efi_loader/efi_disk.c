@@ -457,8 +457,10 @@ static efi_status_t efi_disk_add_dev(
 		diskobj->dp = efi_dp_append_node(dp_parent, node);
 		efi_free_pool(node);
 		diskobj->media.last_block = part_info->size - 1;
-		if (part_info->bootable & PART_EFI_SYSTEM_PARTITION)
+		if (part_info->bootable & PART_EFI_SYSTEM_PARTITION) {
 			esp_guid = &efi_system_partition_guid;
+			printf("%s:  found ESP on %pD\n", __func__, diskobj->dp);
+		}
 	} else {
 		diskobj->dp = efi_dp_from_part(desc, part);
 		diskobj->media.last_block = desc->lba - 1;
