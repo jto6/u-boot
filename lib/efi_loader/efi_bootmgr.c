@@ -803,10 +803,15 @@ efi_bootmgr_enumerate_boot_options(struct eficonfig_media_boot_option *opt,
 		struct efi_device_path *short_dp;
 		struct efi_block_io *blkio;
 
+		ret = efi_search_protocol(handles[i], &efi_guid_device_path, &handler);
+		ret = efi_protocol_open(handler, (void **)&device_path,
+					efi_root, NULL, EFI_OPEN_PROTOCOL_GET_PROTOCOL);
+
 		ret = efi_search_protocol(handles[i], &efi_block_io_guid, &handler);
 		blkio = handler->protocol_interface;
+		printf("%s:  found (L:%d, R:%d) %pD\n", __func__, blkio->media->logical_partition, blkio->media->removable_media, device_path);
 
-		if (blkio->media->logical_partition)
+                if (blkio->media->logical_partition)
 			continue;
 
 		if (removable != (blkio->media->removable_media != 0))
@@ -824,6 +829,7 @@ efi_bootmgr_enumerate_boot_options(struct eficonfig_media_boot_option *opt,
 		if (ret != EFI_SUCCESS)
 			continue;
 
+		printf("%s:  found %s (%pD)\n", __func__, buf, device_path);
 		p = dev_name;
 		utf8_utf16_strncpy(&p, buf, strlen(buf));
 
