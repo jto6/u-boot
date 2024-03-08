@@ -5,6 +5,12 @@
 
 #include "k3-security.h"
 
+// Capsue update GUIDs.  See ti_armv7_common.h.
+#define K3_TIBOOT3_IMAGE_UUID_STR "e672b518-7cd7-4014-bd8d-40724d0ad4dc"
+#define K3_SPL_IMAGE_UUID_STR "86f710ad-10cf-46ea-ac67-856ae06efad2"
+#define K3_UBOOT_IMAGE_UUID_STR "81b58fb0-3b00-4add-a20a-c185bbaca1ed"
+#define K3_SYSFW_IMAGE_UUID_STR "6fd10680-361b-431f-80aa-899455819e11"
+
 / {
 	binman: binman {
 		multiple-images;
@@ -488,5 +494,63 @@
 	};
 
 };
+
+#ifdef CONFIG_TARGET_AM642_R5_EVM
+
+&binman {
+	capsule-tiboot3 {
+		filename = "tiboot3-capsule.bin";
+		efi-capsule {
+			image-index = <0x1>;
+			image-guid = K3_TIBOOT3_IMAGE_UUID_STR;
+			private-key = "arch/arm/mach-k3/keys/custMpk.pem";
+			public-key-cert = "arch/arm/mach-k3/keys/custMpk.crt";
+			monotonic-count = <0x1>;
+
+			blob {
+				filename = "tiboot3.bin";
+			};
+		};
+	};
+};
+
+#endif
+
+#ifdef CONFIG_TARGET_AM642_A53_EVM
+
+&binman {
+	capsule-tispl {
+		filename = "tispl-capsule.bin";
+		efi-capsule {
+			image-index = <0x2>;
+			image-guid = K3_SPL_IMAGE_UUID_STR;
+			private-key = "arch/arm/mach-k3/keys/custMpk.pem";
+			public-key-cert = "arch/arm/mach-k3/keys/custMpk.crt";
+			monotonic-count = <0x1>;
+
+			blob {
+				filename = "tispl.bin";
+			};
+		};
+	};
+};
+
+&binman {
+	capsule-uboot {
+		filename = "uboot-capsule.bin";
+		efi-capsule {
+			image-index = <0x3>;
+			image-guid = K3_UBOOT_IMAGE_UUID_STR;
+			private-key = "arch/arm/mach-k3/keys/custMpk.pem";
+			public-key-cert = "arch/arm/mach-k3/keys/custMpk.crt";
+			monotonic-count = <0x1>;
+
+			blob {
+				filename = "u-boot.img";
+			};
+		};
+	};
+};
+#endif
 
 #endif
