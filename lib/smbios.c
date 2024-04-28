@@ -333,7 +333,7 @@ static int smbios_write_type0(ulong *current, int handle,
 	memset(t, 0, sizeof(struct smbios_type0));
 	fill_smbios_header(t, SMBIOS_BIOS_INFORMATION, len, handle);
 	smbios_set_eos(ctx, t->eos);
-	t->vendor = smbios_add_prop(ctx, NULL, "U-Boot");
+	t->vendor = smbios_add_prop(ctx, NULL, "TI");
 
 	t->bios_ver = smbios_add_prop(ctx, "version", PLAIN_VERSION);
 	if (t->bios_ver)
