@@ -1329,6 +1329,11 @@ efi_status_t efi_launch_capsules(void)
 	if (!nfiles)
 		return EFI_SUCCESS;
 
+	if (IS_ENABLED(CONFIG_EFI_CAPSULE_BOARD_INSECURE)) {
+		log_info("WARNING: EFI Capsules might be insecure!\n");
+		log_info("WARNING: Please check https://docs.u-boot.org/en/latest/develop/uefi/uefi.html#porting-capsule-update-to-new-boards\n");
+	}
+
 	/* Launch capsules */
 	for (i = 0, ++index; i < nfiles; i++, index++) {
 		log_debug("Applying %ls\n", files[i]);

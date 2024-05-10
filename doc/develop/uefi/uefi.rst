@@ -526,6 +526,7 @@ following command can be issued
       --guid c1b629f1-ce0e-4894-82bf-f0a38387e630 \
       optee.bin optee.capsule
 
+.. _Enabling Capsule Authentication:
 
 Enabling Capsule Authentication
 *******************************
@@ -631,17 +632,32 @@ where version.dtso looks like::
 The properties of image-type-id and image-index must match the value
 defined in the efi_fw_image array as image_type_id and image_index.
 
-Porting Capsule Updates to new boards
-*************************************
+Porting Capsule Update to new boards
+************************************
 
 It is important, when using a reference board as a starting point for a custom
 board, that certain steps are taken to properly support Capsule Updates.
 
-Capsule GUIDs need to be unique for each firmware and board. That is, if two
-firmwares are built from the same source but result in different binaries
-because they are built for different boards, they should have different GUIDs.
-Therefore it is important when creating support for a new board, new GUIDs are
-defined in the board's header file.  *DO NOT* reuse capsule GUIDs.
+Capsule GUIDs need to be unique for each firmware and board. That is, even
+if two firmwares are built from the same source but result in different
+binaries because they are built for different boards, they should have
+different GUIDs. Therefore it is important when creating support for a new
+board, new GUIDs are defined in the board's header file. *DO NOT* reuse
+capsule GUIDs.
+
+When capsule authentication is enabled (via EFI_CAPSULE_AUTHENTICATE), it
+is also very important to set the public key certificate corresponding to
+the capsule signing key. See :ref:`Enabling Capsule Authentication` for
+more information on signing capsules. *DO NOT* reuse the certificate file
+from the reference board, which usually would be based on the development
+board keys.
+
+By default, the EFI_CAPSULE_BOARD_INSECURE config is set to true and causes
+a warning (info level) alerting a developer to consult this section to
+ensure the capsule update capability is secure for the platform. Once this
+section has been reviewed and confidence is established in the security of
+the capsule update implementation for this board, deselecting
+EFI_CAPSULE_BOARD_INSECURE config will remove the warning.
 
 Executing the boot manager
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
