@@ -1309,6 +1309,12 @@ efi_status_t efi_launch_capsules(void)
 	if (check_run_capsules() != EFI_SUCCESS)
 		return EFI_SUCCESS;
 
+	if (IS_ENABLED(CONFIG_EFI_CAPSULE_BOARD_INSECURE))
+	{
+		log_info("WARNING: EFI Capsules might be insecure!\n");
+		log_info("WARNING: Please check https://docs.u-boot.org/en/latest/develop/uefi/uefi.html#porting-capsule-update-to-new-boards\n");
+	}
+
 	index_max = get_max_capsule();
 	index = get_last_capsule();
 

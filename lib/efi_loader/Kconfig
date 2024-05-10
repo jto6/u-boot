@@ -236,6 +236,19 @@ config EFI_CAPSULE_ON_DISK_EARLY
 	  executed as part of U-Boot initialisation so that they will
 	  surely take place whatever is set to distro_bootcmd.
 
+config EFI_CAPSULE_BOARD_INSECURE
+	bool "Permit insecure capsule-on-disk support"
+	depends on EFI_HAVE_CAPSULE_SUPPORT
+	default y
+	help
+	  Permit insecure capsule update support and emit a warning (info level)
+	  when applying capsule updates, indicating that the configuration is
+	  insecure and including a link to the capsule update porting guide in
+	  U-Boot docs. Disabling this option removes the warning. A developer
+	  configuration doesn't need to be secure, but before making a product
+	  from the configuration, the intent is to developers alert of steps that
+	  must be taken.
+    
 config EFI_CAPSULE_FIRMWARE
 	bool
 
