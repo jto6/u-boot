@@ -42,8 +42,9 @@
 		};
 	};
 
-	main_conf: bus@100000 {
-		compatible = "simple-bus";
+	main_conf: syscon@100000 {
+		compatible = "syscon", "simple-mfd";
+		reg = <0x00 0x00100000 0x00 0x20000>;
 		#address-cells = <1>;
 		#size-cells = <1>;
 		ranges = <0x0 0x00 0x00100000 0x20000>;
