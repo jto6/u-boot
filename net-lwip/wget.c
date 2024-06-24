@@ -35,8 +35,10 @@ static int parse_url(char *url, char *host, u16 *port, char **path)
 	long lport;
 
 	p = strstr(url, "http://");
-	if (!p)
+	if (!p) {
+		log_err("only http:// is supported\n");
 		return -EINVAL;
+	}
 
 	p += strlen("http://");
 
