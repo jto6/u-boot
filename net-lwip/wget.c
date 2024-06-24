@@ -51,7 +51,7 @@ static int parse_url(char *url, char *host, u16 *port, char **path)
 		return -EINVAL;
 
 	memcpy(host, p, pp - p);
-	host[pp - p + 1] = '\0';
+	host[pp - p] = '\0';
 
 	if (*pp == ':') {
 		/* Parse port number */
