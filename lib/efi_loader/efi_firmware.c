@@ -649,8 +649,10 @@ efi_status_t EFIAPI efi_firmware_fit_set_image(
 	efi_status_t (*progress)(efi_uintn_t completion),
 	u16 **abort_reason)
 {
+	int ret;
 	efi_status_t status;
 	struct fmp_state state = { 0 };
+	char *orig_dfu_env;
 
 	EFI_ENTRY("%p %d %p %zu %p %p %p\n", this, image_index, image,
 		  image_size, vendor_code, progress, abort_reason);
@@ -663,7 +665,22 @@ efi_status_t EFIAPI efi_firmware_fit_set_image(
 	if (status != EFI_SUCCESS)
 		return EFI_EXIT(status);
 
-	if (fit_update(image))
+	orig_dfu_env = strdup(env_get("dfu_alt_info"));
+	if (env_set("dfu_alt_info", update_info.dfu_string)) {
+		log_err("unable to set env variable \"dfu_alt_info\"!\n");
+		free(orig_dfu_env);
+		return EFI_EXIT(EFI_DEVICE_ERROR);
+	}
+
+	ret = fit_update(image);
+
+	if (env_set("dfu_alt_info", orig_dfu_env)) {
+		log_err("unable to set env variable \"dfu_alt_info\"!\n");
+		ret = 1;
+	}
+	free(orig_dfu_env);
+
+	if (ret)
 		return EFI_EXIT(EFI_DEVICE_ERROR);
 
 	efi_firmware_set_fmp_state_var(&state, image_index);
@@ -717,6 +734,7 @@ efi_status_t EFIAPI efi_firmware_raw_set_image(
 	u8 dfu_alt_num;
 	efi_status_t status;
 	struct fmp_state state = { 0 };
+	char *orig_dfu_env;
 
 	EFI_ENTRY("%p %d %p %zu %p %p %p\n", this, image_index, image,
 		  image_size, vendor_code, progress, abort_reason);
@@ -747,8 +765,23 @@ efi_status_t EFIAPI efi_firmware_raw_set_image(
 		}
 	}
 
-	if (dfu_write_by_alt(dfu_alt_num, (void *)image, image_size,
-			     NULL, NULL))
+	orig_dfu_env = strdup(env_get("dfu_alt_info"));
+	if (env_set("dfu_alt_info", update_info.dfu_string)) {
+		log_err("unable to set env variable \"dfu_alt_info\"!\n");
+		free(orig_dfu_env);
+		return EFI_EXIT(EFI_DEVICE_ERROR);
+	}
+
+	ret = dfu_write_by_alt(dfu_alt_num, (void *)image, image_size,
+			       NULL, NULL);
+
+	if (env_set("dfu_alt_info", orig_dfu_env)) {
+		log_err("unable to set env variable \"dfu_alt_info\"!\n");
+		ret = 1;
+	}
+	free(orig_dfu_env);
+
+	if (ret)
 		return EFI_EXIT(EFI_DEVICE_ERROR);
 
 	efi_firmware_set_fmp_state_var(&state, image_index);
