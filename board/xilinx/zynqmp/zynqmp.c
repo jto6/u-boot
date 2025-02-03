@@ -11,6 +11,7 @@
 #include <dfu.h>
 #include <env.h>
 #include <env_internal.h>
+#include <efi_loader.h>
 #include <init.h>
 #include <log.h>
 #include <net.h>
@@ -526,6 +527,9 @@ int board_late_init(void)
 	usb_ether_init();
 #endif
 
+	if (IS_ENABLED(CONFIG_EFI_HAVE_CAPSULE_SUPPORT))
+		configure_capsule_updates();
+
 	multiboot = multi_boot();
 	if (multiboot >= 0)
 		env_set_hex("multiboot", multiboot);
@@ -631,7 +635,7 @@ enum env_location env_get_location(enum env_operation op, int prio)
 }
 #endif
 
-#if defined(CONFIG_SET_DFU_ALT_INFO)
+#if IS_ENABLED(CONFIG_EFI_HAVE_CAPSULE_SUPPORT)
 
 #define DFU_ALT_BUF_LEN		SZ_1K
 
@@ -660,14 +664,11 @@ static void mtd_found_part(u32 *base, u32 *size)
 	}
 }
 
-void set_dfu_alt_info(char *interface, char *devstr)
+void configure_capsule_updates(void)
 {
 	int multiboot, bootseq = 0, len = 0;
 
 	ALLOC_CACHE_ALIGN_BUFFER(char, buf, DFU_ALT_BUF_LEN);
-
-	if (env_get("dfu_alt_info"))
-		return;
 
 	memset(buf, 0, sizeof(buf));
 
@@ -732,8 +733,8 @@ void set_dfu_alt_info(char *interface, char *devstr)
 		return;
 	}
 
-	env_set("dfu_alt_info", buf);
-	puts("DFU alt info setting: done\n");
+	update_info.dfu_string = strdup(buf);
+	debug("Capsule DFU: %s\n", update_info.dfu_string);
 }
 #endif
 
