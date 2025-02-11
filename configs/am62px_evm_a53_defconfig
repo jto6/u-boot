@@ -163,3 +163,4 @@ CONFIG_EFI_SET_TIME=y
 #include <configs/am62x_a53_usbdfu.config>
 
 CONFIG_NET_LWIP=y
+CONFIG_EFI_HTTP_BOOT=y
