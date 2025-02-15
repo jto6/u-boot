@@ -127,7 +127,7 @@ static __maybe_unused void rtc_erratumi2327_init(void)
 static int get_a53_cpu_clock_index(ofnode node)
 {
 	int count, i;
-	struct ofnode_phandle_args *args;
+	struct ofnode_phandle_args args;
 	ofnode clknode;
 
 	clknode = ofnode_path("/bus@f0000/system-controller@44043000/clock-controller");
@@ -138,9 +138,9 @@ static int get_a53_cpu_clock_index(ofnode node)
 
 	for (i  = 0; i < count; i++) {
 		if (!ofnode_parse_phandle_with_args(node, "assigned-clocks",
-						    "#clock-cells", 0, i, args)) {
-			if (ofnode_equal(clknode, args->node) &&
-			    args->args[0] == AM62X_DEV_A53SS0_CORE_0_DEV_ID)
+						    "#clock-cells", 0, i, &args)) {
+			if (ofnode_equal(clknode, args.node) &&
+			    args.args[0] == AM62X_DEV_A53SS0_CORE_0_DEV_ID)
 				return i;
 		}
 	}
