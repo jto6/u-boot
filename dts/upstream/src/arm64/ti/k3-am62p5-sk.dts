@@ -520,6 +520,8 @@
 
 &usb0 {
 	usb-role-switch;
+	bootph-all;
+	dr_mode = "host";
 
 	port {
 		usb0_hs_ep: endpoint {

@@ -42,6 +42,6 @@
 };
 
 &usb0 {
-	dr_mode = "peripheral";
+	dr_mode = "host";
 	bootph-all;
 };
